@@ -4,43 +4,9 @@ variable "admin_username" {
   description = "The admin username set in the linux_profile"
 }
 
-variable "public_ssh_key_path" {
-  type        = string
-  description = "The path to the ssh pub file, tied to the admin user in linux_profile"
-}
-
-variable "region" {
-  type        = string
-  description = "Azure Region"
-}
-
 variable "cluster_name" {
   type        = string
   description = "Name of the AKS cluster"
-}
-
-variable "resource_group_name" {
-  type        = string
-  description = "Name of the resource group to use"
-}
-
-variable "tags" {
-  default = {}
-}
-
-variable "service_principal_secret" {
-  type        = string
-  description = "The secret to use for the service principal account"
-}
-
-variable "kubernetes_version" {
-  description = "The AKS Kubernetes version"
-  default     = null
-}
-
-variable "vnet_subnet_id" {
-  type        = string
-  description = "The subnet ID for default_node_pool"
 }
 
 variable "default_node_pool" {
@@ -59,6 +25,22 @@ variable "default_node_pool" {
   }
 }
 
+variable "docker_bridge_cidr" {
+  description = "The CIDR to use for the docker network interface"
+  default     = null
+}
+
+variable "kubernetes_version" {
+  description = "The AKS Kubernetes version"
+  default     = null
+}
+
+variable "load_balancer_sku" {
+  type        = string
+  description = "The load balancer type. Supported values: basic, standard"
+  default     = "standard"
+}
+
 # https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html#network_plugin
 variable "network_plugin" {
   type        = string
@@ -72,15 +54,9 @@ variable "network_policy" {
   default     = null
 }
 
-variable "load_balancer_sku" {
+variable "node_subnet_id" {
   type        = string
-  description = "The load balancer type. Supported values: basic, standard"
-  default     = "standard"
-}
-
-variable "docker_bridge_cidr" {
-  description = "The CIDR to use for the docker network interface"
-  default     = null
+  description = "The subnet ID for default_node_pool"
 }
 
 variable "pod_cidr" {
@@ -88,7 +64,31 @@ variable "pod_cidr" {
   default     = null
 }
 
+variable "public_ssh_key_path" {
+  type        = string
+  description = "The path to the ssh pub file, tied to the admin user in linux_profile"
+}
+
+variable "region" {
+  type        = string
+  description = "Azure Region"
+}
+
+variable "resource_group_name" {
+  type        = string
+  description = "Name of the resource group to use"
+}
+
 variable "service_cidr" {
   description = "The CIDR for kubernetes services"
   default     = null
+}
+
+variable "service_principal_secret" {
+  type        = string
+  description = "The secret to use for the service principal account"
+}
+
+variable "tags" {
+  default = {}
 }

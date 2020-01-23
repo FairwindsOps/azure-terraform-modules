@@ -33,7 +33,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     vm_size               = var.default_node_pool.vm_size
     availability_zones    = var.default_node_pool.availability_zones
     max_pods              = var.default_node_pool.max_pods
-    vnet_subnet_id        = var.vnet_subnet_id
+    vnet_subnet_id        = var.node_subnet_id
   }
 
   service_principal {

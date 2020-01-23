@@ -66,6 +66,11 @@ The following table lists the configurable parameters that this module accepts.
 | `tags`                | A map of tags to be appended to Azure objects            | `{}`           |
 
 ## Outputs
+| Output    | Description                     |
+| ----------|---------------------------------|
+| `id`      | The ID of the virtual_network   |
+| `name`    | The name of the virtual network |
+| `subnets` | An array containing all subnets | 
 
 ## Considerations
 

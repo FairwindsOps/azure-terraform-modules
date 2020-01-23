@@ -19,7 +19,7 @@ resource "azurerm_resource_group" "aks" {
 
 ## Create the virtual network for an AKS cluster
 module "network" {
-  source              = "git@github.com:FairwindsOps/azure-terraform-modules/virtual_network"
+  source              = "git@github.com:FairwindsOps/azure-terraform-modules.git//virtual_network"
   region              = "centralus"
   resource_group_name = azurerm_resource_group.aks.name
   name                = "aks"
@@ -33,12 +33,12 @@ module "network" {
 
 ## Create the AKS cluster
 module "cluster" {
-  source                   = "git@github.com:FairwindsOps/azure-terraform-modules/aks_cluster"
+  source                   = "git@github.com:FairwindsOps/azure-terraform-modules.git//aks_cluster"
   region                   = "centralus"
   cluster_name             = "aks-demo"
-  resource_group_name      = azurerm_resource_group.default.name
+  resource_group_name      = azurerm_resource_group.aks.name
   service_principal_secret = "some-super-secret-password"
-  vnet_subnet_id           = module.network.subnets[0] #use the subnet from the module above
+  node_subnet_id           = module.network.subnets[0] #use the subnet from the module above
   network_plugin           = "azure"
   network_policy           = "calico"
   public_ssh_key_path      = "/path/to/ssh_pub_key.rsa"

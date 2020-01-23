@@ -1,6 +1,6 @@
 variable "admin_username" {
   type        = string
-  default     = "admin"
+  default     = "aksadmin"
   description = "The admin username set in the linux_profile"
 }
 

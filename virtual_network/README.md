@@ -1,4 +1,4 @@
-## Virtual Network
+# Virtual Network
 
 This module provisions a virtual network within Azure. By default it will supply two subnets. Under the hood, this module relies on the [Hashicorp subnet module](https://github.com/hashicorp/terraform-cidr-subnets/tree/v1.0.0). It extends the usage a bit by allowing users to input a `cidr_block`, rather than calculate the `new_bits` ahead of time. Review the configuration and example section for customizing the virtual network.
 

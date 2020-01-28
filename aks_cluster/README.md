@@ -1,5 +1,4 @@
-## Virtual Network
-
+# AKS Cluster
 This module provisions an AKS cluster within Azure. By default, this module will provision three AAD Applications and tie the cluster to Azure Active Directory. A `clusteradmin` group is created in AAD, where AKS administrators can be added.
 
 ## Requirements

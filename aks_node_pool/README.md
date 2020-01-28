@@ -1,4 +1,4 @@
-## Virtual Network
+# AKS Node Pool
 
 This module provisions an AKS node pool that will attach to an AKS cluster. The node pool must be deployed to the same subnet as the default AKS node pool.
 

@@ -1,7 +1,3 @@
-# locals {
-#     max_count = var.max_count == null && var.enable_autoscaling == t
-# }
-
 resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
   name                  = var.name
   kubernetes_cluster_id = var.aks_cluster_id

@@ -1,8 +1,14 @@
-# Configure the Azure Provider
-provider "azurerm" {}
+data "azurerm_subscription" "current" {}
+
+# locals {
+#   aad_client_sp_id     = var.enable_aad_auth ? azuread_service_principal.client_sp.application_id : null
+#   aad_server_sp_id     = var.enable_aad_auth ? azuread_service_principal.server_sp.application_id : null
+#   aad_server_sp_secret = var.enable_aad_auth ? azuread_service_principal_password.server_sp_password.value : null
+#   aad_tenant_id        = var.enable_aad_auth ? data.azurerm_subscription.current.tenant_id : null
+# }
 
 resource "azurerm_kubernetes_cluster" "cluster" {
-  depends_on          = ["null_resource.delay_after_sp_created"]
+  depends_on          = [null_resource.delay_after_sp_created, null_resource.consent_delay]
   name                = var.cluster_name
   location            = var.region
   dns_prefix          = var.cluster_name
@@ -19,10 +25,16 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 
   role_based_access_control {
     enabled = true
+    azure_active_directory {
+      client_app_id     = azuread_service_principal.client_sp.application_id
+      server_app_id     = azuread_service_principal.server_sp.application_id
+      server_app_secret = azuread_service_principal_password.server_sp_password.value
+      tenant_id         = data.azurerm_subscription.current.tenant_id
+    }
   }
 
   default_node_pool {
-    name                  = "defaultpool"
+    name                  = "default"
     node_count            = var.default_node_pool.node_count
     enable_auto_scaling   = var.default_node_pool.enable_auto_scaling
     enable_node_public_ip = var.default_node_pool.enable_node_public_ip
@@ -36,9 +48,10 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     vnet_subnet_id        = var.node_subnet_id
   }
 
+
   service_principal {
-    client_id     = azuread_service_principal.service_principal.application_id
-    client_secret = azuread_service_principal_password.sp_password.value
+    client_id     = azuread_service_principal.aks_sp.application_id
+    client_secret = azuread_service_principal_password.aks_sp_password.value
   }
 
   network_profile {

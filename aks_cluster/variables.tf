@@ -84,9 +84,22 @@ variable "service_cidr" {
   default     = null
 }
 
-variable "service_principal_secret" {
+variable "aks_sp_secret" {
   type        = string
-  description = "The secret to use for the service principal account"
+  default     = null
+  description = "The secret to use for the AKS service principal account"
+}
+
+variable "client_sp_secret" {
+  type        = string
+  default     = null
+  description = "The secret to use for the AAD Client service principal account"
+}
+
+variable "server_sp_secret" {
+  type        = string
+  default     = null
+  description = "The secret to use for the AAD Server service principal account"
 }
 
 variable "tags" {

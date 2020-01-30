@@ -35,16 +35,16 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 
   default_node_pool {
     name                  = "default"
-    node_count            = var.default_node_pool.node_count
-    enable_auto_scaling   = var.default_node_pool.enable_auto_scaling
-    enable_node_public_ip = var.default_node_pool.enable_node_public_ip
-    node_taints           = var.default_node_pool.node_taints
-    os_disk_size_gb       = var.default_node_pool.os_disk_size_gb
-    min_count             = var.default_node_pool.min_count
-    max_count             = var.default_node_pool.max_count
-    vm_size               = var.default_node_pool.vm_size
-    availability_zones    = var.default_node_pool.availability_zones
-    max_pods              = var.default_node_pool.max_pods
+    node_count            = var.node_count
+    enable_auto_scaling   = var.enable_auto_scaling
+    enable_node_public_ip = var.enable_node_public_ip
+    node_taints           = var.node_taints
+    os_disk_size_gb       = var.os_disk_size_gb
+    min_count             = var.node_min_count
+    max_count             = var.node_max_count
+    vm_size               = var.node_type
+    availability_zones    = var.node_availability_zones
+    max_pods              = var.node_max_pods
     vnet_subnet_id        = var.node_subnet_id
   }
 

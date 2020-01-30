@@ -9,20 +9,53 @@ variable "cluster_name" {
   description = "Name of the AKS cluster"
 }
 
-variable "default_node_pool" {
-  description = "Default node pool map"
-  default = {
-    node_count            = 1
-    enable_auto_scaling   = true
-    enable_node_public_ip = false
-    node_taints           = null
-    os_disk_size_gb       = 35
-    min_count             = 1
-    max_count             = 20
-    max_pods              = 200
-    vm_size               = "Standard_D2_v2"
-    availability_zones    = [1, 2, 3]
-  }
+## Default Node Pool Options
+variable "node_count" {
+  default     = 1
+  description = "The default node pool instance count"
+}
+variable "enable_auto_scaling" {
+  default     = true
+  description = "Enable autoscaling on the default node pool"
+}
+variable "enable_node_public_ip" {
+  default     = false
+  description = "Enable public IPs on the default node pool"
+}
+
+variable "node_taints" {
+  default     = null
+  description = "Default node pool taints"
+}
+
+variable "os_disk_size_gb" {
+  default     = 50
+  description = "Default node pool disk size"
+}
+
+variable "node_min_count" {
+  default     = 1
+  description = "Default node pool intial count (used with autoscaling)"
+}
+
+variable "node_max_count" {
+  default     = 10
+  description = "Default node pool max count (use with autoscaling)"
+}
+
+variable "node_max_pods" {
+  default     = 110
+  description = "Total amount of pods allowed per node"
+}
+
+variable "node_type" {
+  default     = "Standard_D2_v2"
+  description = "The Azure VM instance type"
+}
+
+variable "node_availability_zones" {
+  default     = [1, 2, 3]
+  description = "The availability zones to place the node pool instances"
 }
 
 variable "docker_bridge_cidr" {

@@ -73,7 +73,6 @@ The following table lists the configurable parameters that this module accepts.
 |----------------------------|--------------------------------------------------------------|-------------|
 | `admin_username`           | The username set in linux_profile                            | `"admin"`   |
 | `cluster_name`             | Name of the AKS cluster                                      | `None`      |
-| `default_node_pool`        | The default_node_pool nap (see table below)                  | `see below` |
 | `docker_bridge_cidr`       | The docker daemon host cidr                                  | `null`      |
 | `kubernetes_version`       | The Kubernetes AKS version                                   | `null`      |
 | `load_balancer_sku`        | The load balancer type. Supported values: basic, standard    | `standard`  |
@@ -91,18 +90,18 @@ The following table lists the configurable parameters that this module accepts.
 | `tags`                     | A map of tags to be auto-attached to resources               | `{}`        |
 
 ### default_node_pool configuration
-| Parameter               | Description                                                  | Default            |
-|-------------------------|--------------------------------------------------------------|--------------------|
-| `availability_zones`    | Azure availability zones to use                              | `[1, 2, 3]`        |
-| `enable_auto_scaling`   | Boolean to enable/disable autoscaling                        | `true`             |
-| `enable_node_public_ip` | Boolean to enable allocation of public ips to nodes          | `false`            |
-| `max_count`             | Max amount of nodes to autoscale                             | `20`               |
-| `max_pods`              | Max amount of pods per node (subject to CNI)                 | `200`              |
-| `min_count`             | Min amount of nodes for autoscaling (must be greater than 0) | `1`                |
-| `node_count`            | The initial node count                                       | `1`                |
-| `node_taints`           | Taints to apply to nodes                                     | `null`             |
-| `os_disk_size_gb`       | The root disk size for VMs                                   | `35`               |
-| `vm_size`               | The Azure VM instance type                                   | `"Standard_D2_v2"` |
+| Parameter                 | Description                                                  | Default            |
+|---------------------------|--------------------------------------------------------------|--------------------|
+| `node_availability_zones` | Azure availability zones to use                              | `[1, 2, 3]`        |
+| `enable_auto_scaling`     | Boolean to enable/disable autoscaling                        | `true`             |
+| `enable_node_public_ip`   | Boolean to enable allocation of public ips to nodes          | `false`            |
+| `node_max_count`          | Max amount of nodes to autoscale                             | `20`               |
+| `node_max_pods`           | Max amount of pods per node (subject to CNI)                 | `200`              |
+| `node_min_count`          | Min amount of nodes for autoscaling (must be greater than 0) | `1`                |
+| `node_count`              | The initial node count                                       | `1`                |
+| `node_taints`             | Taints to apply to nodes                                     | `null`             |
+| `os_disk_size_gb`         | The root disk size for VMs                                   | `35`               |
+| `node_type`               | The Azure VM instance type                                   | `"Standard_D2_v2"` |
 
 ## Outputs
 | Ouput |        Description |

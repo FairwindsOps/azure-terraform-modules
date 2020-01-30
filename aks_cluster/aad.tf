@@ -61,7 +61,7 @@ resource "azuread_service_principal_password" "server_sp_password" {
     ignore_changes = [end_date]
   }
   service_principal_id = azuread_service_principal.server_sp.id
-  value                = var.server_sp_secret
+  value                = var.auth_server_sp_secret
   end_date             = timeadd(timestamp(), "43800h") # 5 years
 }
 
@@ -74,7 +74,7 @@ resource "azuread_service_principal_password" "client_sp_password" {
     ignore_changes = [end_date]
   }
   service_principal_id = azuread_service_principal.client_sp.id
-  value                = var.client_sp_secret
+  value                = var.auth_client_sp_secret
   end_date             = timeadd(timestamp(), "43800h") # 5 years
 }
 

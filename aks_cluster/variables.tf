@@ -123,13 +123,13 @@ variable "aks_sp_secret" {
   description = "The secret to use for the AKS service principal account"
 }
 
-variable "client_sp_secret" {
+variable "auth_client_sp_secret" {
   type        = string
   default     = null
   description = "The secret to use for the AAD Client service principal account"
 }
 
-variable "server_sp_secret" {
+variable "auth_server_sp_secret" {
   type        = string
   default     = null
   description = "The secret to use for the AAD Server service principal account"

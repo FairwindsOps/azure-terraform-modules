@@ -38,8 +38,8 @@ module "cluster" {
   cluster_name             = "myakscluster"
   resource_group_name      = azurerm_resource_group.aks.name
   aks_sp_secret            = "some-super-secret-password"
-  client_sp_secret         = "some-super-secret-password"
-  server_sp_secret         = "some-super-secret-password"  
+  auth_client_sp_secret         = "some-super-secret-password"
+  auth_server_sp_secret         = "some-super-secret-password"  
   node_subnet_id           = module.network.subnets[0] # use the subnet from the module above
   network_plugin           = "azure"
   network_policy           = "calico"
@@ -85,8 +85,8 @@ The following table lists the configurable parameters that this module accepts.
 | `resource_group_name`      | The resource group to place the AKS cluster in               | `None`      |
 | `service_cidr`             | The CIDR range for Kubernetes services                       | `null`      |
 | `aks_sp_secret`            | Secret password attached to the AKS service principal        | `None`      |
-| `client_sp_secret`         | Secret password attached to the AAD Server service principal | `None`      |
-| `server_sp_secret`         | Secret password attached to the AAD Client service principal | `None`      |
+| `auth_client_sp_secret`    | Secret password attached to the AAD Server service principal | `None`      |
+| `auth_server_sp_secret`    | Secret password attached to the AAD Client service principal | `None`      |
 | `tags`                     | A map of tags to be auto-attached to resources               | `{}`        |
 
 ### default_node_pool configuration

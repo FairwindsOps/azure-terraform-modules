@@ -41,7 +41,7 @@ module "cluster" {
   aks_sp_secret            = "some-super-secret-password"
   client_sp_secret         = "some-super-secret-password"
   server_sp_secret         = "some-super-secret-password"  
-  node_subnet_id           = module.network.subnets[0] # use the subnet from the module above
+  node_subnet_id           = module.network.subnet_ids[0] # use the subnet from the module above
   network_plugin           = "azure"
   network_policy           = "calico"
   public_ssh_key_path      = "/path/to/ssh_pub_key.rsa"

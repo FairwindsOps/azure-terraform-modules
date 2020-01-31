@@ -38,9 +38,9 @@ module "cluster" {
   cluster_name             = "myakscluster"
   resource_group_name      = azurerm_resource_group.aks.name
   aks_sp_secret            = "some-super-secret-password"
-  auth_client_sp_secret         = "some-super-secret-password"
-  auth_server_sp_secret         = "some-super-secret-password"  
-  node_subnet_id           = module.network.subnets[0] # use the subnet from the module above
+  auth_client_sp_secret    = "some-super-secret-password"
+  auth_server_sp_secret    = "some-super-secret-password"  
+  node_subnet_id           = module.network.subnet_ids[0] # use the subnet from the module above
   network_plugin           = "azure"
   network_policy           = "calico"
   public_ssh_key_path      = "/path/to/ssh_pub_key.rsa"

@@ -116,7 +116,8 @@ resource "azuread_group" "aks-aad-clusteradmins" {
 # We need to wait for service principals to propagate in Azure
 resource "null_resource" "delay_after_sp_created" {
   provisioner "local-exec" {
-    command = "sleep 60"
+    interpreter = ["bash", "-c"]
+    command     = "sleep 60"
   }
   depends_on = [
     azuread_service_principal.server_sp,
@@ -128,15 +129,8 @@ resource "null_resource" "delay_after_sp_created" {
 # Terraform does not provide a way to override Admin consent, we need to shell out to az cli
 resource "null_resource" "grant_server_application_privs" {
   provisioner "local-exec" {
-    command = "az ad app permission admin-consent --id ${azuread_application.ad_server_application.application_id}"
-  }
-  depends_on = [
-    null_resource.delay_after_sp_created
-  ]
-}
-resource "null_resource" "grant_client_application_privs" {
-  provisioner "local-exec" {
-    command = "az ad app permission admin-consent --id ${azuread_application.ad_client_application.application_id}"
+    interpreter = ["bash", "-c"]
+    command     = "GRANTS=$(az ad app permission list-grants --id ${azuread_application.ad_server_application.application_id}); if [[ $GRANTS == \"[]\" ]]; then az ad app permission admin-consent --id ${azuread_application.ad_server_application.application_id}; else true; fi"
   }
   depends_on = [
     null_resource.delay_after_sp_created
@@ -146,10 +140,10 @@ resource "null_resource" "grant_client_application_privs" {
 # Wait for privs to propagate
 resource "null_resource" "consent_delay" {
   provisioner "local-exec" {
-    command = "sleep 60"
+    interpreter = ["bash", "-c"]
+    command     = "sleep 60"
   }
   depends_on = [
-    null_resource.grant_server_application_privs,
-    null_resource.grant_client_application_privs
+    null_resource.grant_server_application_privs
   ]
 }

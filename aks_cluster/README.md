@@ -1,5 +1,5 @@
 # AKS Cluster
-This module provisions an AKS cluster within Azure. By default, this module will provision three AAD Applications and tie the cluster to Azure Active Directory. A `clusteradmin` group is created in AAD, where AKS administrators can be added.
+This module provisions an AKS cluster within Azure. By default, this module will provision three AAD Applications and tie the cluster to Azure Active Directory. A `clusteradmin` group is created in AAD, where AKS administrators can be added. If your AZ account does not have AAD privileges, Terraform will exit with an error. An AAD administrator will need to approve the API request, then Terraform can be run again. 
 
 ## Requirements
 
@@ -8,7 +8,7 @@ This module provisions an AKS cluster within Azure. By default, this module will
 - Logged into the Azure cli
 - Azure resource group
 - Azure virtual network and subnet
-- Azure AAD Admin
+- Azure AAD Admin Privilges
 
 ## Example Usage
 ```

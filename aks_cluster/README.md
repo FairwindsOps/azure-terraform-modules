@@ -8,6 +8,7 @@ This module provisions an AKS cluster within Azure. By default, this module will
 - Logged into the Azure cli
 - Azure resource group
 - Azure virtual network and subnet
+- Azure AAD Admin
 
 ## Example Usage
 ```

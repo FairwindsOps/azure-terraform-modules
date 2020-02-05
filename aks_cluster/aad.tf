@@ -1,5 +1,5 @@
 resource "azuread_application" "ad_server_application" {
-  name                       = "${var.cluster_name}-srv"
+  name                       = "${var.cluster_name}-aks-srv"
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = false
   identifier_uris            = ["https://${var.cluster_name}-srv"]
@@ -38,7 +38,7 @@ resource "azuread_application" "ad_server_application" {
 
 
 resource "azuread_application" "ad_client_application" {
-  name                       = "${var.cluster_name}-client"
+  name                       = "${var.cluster_name}-aks-client"
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = false
   type                       = "native"
@@ -80,7 +80,7 @@ resource "azuread_service_principal_password" "client_sp_password" {
 
 # Create Service Principal for AKS cluster
 resource "azuread_application" "aks_sp_application" {
-  name                       = var.cluster_name
+  name                       = "${var.cluster_name}-aks"
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = false
 }

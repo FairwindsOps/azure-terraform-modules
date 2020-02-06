@@ -63,6 +63,21 @@ variable "docker_bridge_cidr" {
   default     = null
 }
 
+variable "managed_outbound_ip_count" {
+  default = null
+  type    = number
+}
+
+variable "outbound_ip_address_ids" {
+  default = null
+  type    = list(string)
+}
+
+variable "outbound_ip_prefix_ids" {
+  default = null
+  type    = list(string)
+}
+
 variable "kubernetes_version" {
   description = "The AKS Kubernetes version"
   default     = null

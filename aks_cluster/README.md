@@ -1,5 +1,6 @@
 # AKS Cluster
-This module provisions an AKS cluster within Azure. By default, this module will provision three AAD Applications and tie the cluster to Azure Active Directory. A `clusteradmin` group is created in AAD, where AKS administrators can be added. If your AZ account does not have AAD privileges, Terraform will exit with an error. An AAD administrator will need to approve the API request, then Terraform can be run again. 
+
+This module provisions an AKS cluster within Azure. By default, this module will provision three AAD Applications and tie the cluster to Azure Active Directory. A `clusteradmin` group is created in AAD, where AKS administrators can be added. If your AZ account does not have AAD privileges, Terraform will exit with an error. An AAD administrator will need to approve the API request, then Terraform can be run again.
 
 ## Requirements
 
@@ -11,7 +12,8 @@ This module provisions an AKS cluster within Azure. By default, this module will
 - Azure AAD Admin Privilges
 
 ## Example Usage
-```
+
+```json
 ## Create a resource group to place resources
 resource "azurerm_resource_group" "aks" {
   name     = "myakscluster"
@@ -49,15 +51,22 @@ module "cluster" {
 ```
 
 ## Kube Configuration
+
 Once the cluster has been provisioned, it can be accessed with either the `admin` credentials or `AAD` user group credentials.
+
 ### admin credentials
+
 If needed, use the admin credentials directly.
-```
+
+```bash
 $ az aks get-credentials --resource-group myakscluster --name myakscluster --admin
 ```
+
 ### AAD User
+
 To authenticate as an AAD user, first add the user to the `clusteradmin` group created by Terraform.
-```
+
+```bash
 $ az aks get-credentials --resource-group kubernates --name myakscluster
 Merged "myakscluster" as current context in /home/$user/.kube/config
 $ kubectl get nodes
@@ -66,31 +75,85 @@ NAME                                STATUS   ROLES   AGE   VERSION
 aks-default-14693408-vmss000000     Ready    agent   34m   v1.14.8
 ```
 
+### Egress IP Configuration
+
+This module supports static ip addresses for egress. Addresses can be created ahead of time, or provisioned during cluster creation. This is configured via `managed_outbound_ip_count`, `outbound_ip_address_ids`, `outbound_ip_prefix_ids`. See the `variables` section for details. **Do not mix and match these variables.**
+
+Example:
+
+```json
+## Create Public ips for AKS egress
+resource "azurerm_public_ip" "egress" {
+  count               = 3
+  name                = "egress-${count.index}"
+  location            = "centralus"
+  resource_group_name = azurerm_resource_group.aks.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+## Create the AKS cluster
+module "cluster" {
+  source                   = "git@github.com:FairwindsOps/azure-terraform-modules.git//aks_cluster"
+  region                   = "centralus"
+  cluster_name             = "myakscluster"
+  resource_group_name      = azurerm_resource_group.aks.name
+  aks_sp_secret            = "some-super-secret-password"
+  auth_client_sp_secret    = "some-super-secret-password"
+  auth_server_sp_secret    = "some-super-secret-password"
+  node_subnet_id           = module.network.subnet_ids[0]
+  network_plugin           = "azure"
+  network_policy           = "calico"
+  outbound_ip_address_ids = azurerm_public_ip.egress.*.id # input egress ids from above
+  public_ssh_key_path      = "/path/to/ssh_pub_key.rsa"
+}
+
+## Create AKS cluster with dynamically provisioned IP addresses
+module "dynamic-cluster" {
+  source                    = "git@github.com:FairwindsOps/azure-terraform-modules.git//aks_cluster"
+  region                    = "centralus"
+  cluster_name              = "mydynamicakscluster"
+  resource_group_name       = azurerm_resource_group.aks.name
+  aks_sp_secret             = "some-super-secret-password"
+  auth_client_sp_secret     = "some-super-secret-password"
+  auth_server_sp_secret     = "some-super-secret-password"
+  node_subnet_id            = module.network.subnet_ids[0]
+  network_plugin            = "azure"
+  network_policy            = "calico"
+  managed_outbound_ip_count = 3
+  public_ssh_key_path       = "/path/to/ssh_pub_key.rsa"
+}
+```
 
 ## Configuration
+
 The following table lists the configurable parameters that this module accepts.
 
-| Parameter                  | Description                                                  | Default     |
-|----------------------------|--------------------------------------------------------------|-------------|
-| `admin_username`           | The username set in linux_profile                            | `"admin"`   |
-| `cluster_name`             | Name of the AKS cluster                                      | `None`      |
-| `docker_bridge_cidr`       | The docker daemon host cidr                                  | `null`      |
-| `kubernetes_version`       | The Kubernetes AKS version                                   | `null`      |
-| `load_balancer_sku`        | The load balancer type. Supported values: basic, standard    | `standard`  |
-| `network_plugin`           | The CNI network plugin to use (only azure, or kubenet)       | `kubenet`   |
-| `node_subnet_id`           | The subnet ID for the default node pool                      | `None`      |
-| `network_policy`           | The network policy for the CNI, dependent on plugin type     | `null`      |
-| `pod_cidr`                 | Network CIDR range for the pod network                       | `null`      |
-| `public_ssh_key_path`      | The SSH public key attached the linux_profile                | `None`      |
-| `region`                   | The Azure region                                             | `None`      |
-| `resource_group_name`      | The resource group to place the AKS cluster in               | `None`      |
-| `service_cidr`             | The CIDR range for Kubernetes services                       | `null`      |
-| `aks_sp_secret`            | Secret password attached to the AKS service principal        | `None`      |
-| `auth_client_sp_secret`    | Secret password attached to the AAD Server service principal | `None`      |
-| `auth_server_sp_secret`    | Secret password attached to the AAD Client service principal | `None`      |
-| `tags`                     | A map of tags to be auto-attached to resources               | `{}`        |
+| Parameter                   | Description                                                  | Default     |
+|-----------------------------|--------------------------------------------------------------|-------------|
+| `admin_username`            | The username set in linux_profile                            | `"admin"`   |
+| `cluster_name`              | Name of the AKS cluster                                      | `None`      |
+| `docker_bridge_cidr`        | The docker daemon host cidr                                  | `null`      |
+| `kubernetes_version`        | The Kubernetes AKS version                                   | `null`      |
+| `load_balancer_sku`         | The load balancer type. Supported values: basic, standard    | `standard`  |
+| `managed_outbound_ip_count` | The number of egress ips provisioned during cluster creation | `null`      |
+| `outbound_ip_address_ids`   | List of `azurerm_public_ip` ids                              | `null`      |
+| `outbound_ip_prefix_ids`    | IDs of the outbound Public IP Address Prefixes               | `null`      |
+| `network_plugin`            | The CNI network plugin to use (only azure, or kubenet)       | `kubenet`   |
+| `node_subnet_id`            | The subnet ID for the default node pool                      | `None`      |
+| `network_policy`            | The network policy for the CNI, dependent on plugin type     | `null`      |
+| `pod_cidr`                  | Network CIDR range for the pod network                       | `null`      |
+| `public_ssh_key_path`       | The SSH public key attached the linux_profile                | `None`      |
+| `region`                    | The Azure region                                             | `None`      |
+| `resource_group_name`       | The resource group to place the AKS cluster in               | `None`      |
+| `service_cidr`              | The CIDR range for Kubernetes services                       | `null`      |
+| `aks_sp_secret`             | Secret password attached to the AKS service principal        | `None`      |
+| `auth_client_sp_secret`     | Secret password attached to the AAD Server service principal | `None`      |
+| `auth_server_sp_secret`     | Secret password attached to the AAD Client service principal | `None`      |
+| `tags`                      | A map of tags to be auto-attached to resources               | `{}`        |
 
 ### default_node_pool configuration
+
 | Parameter                 | Description                                                  | Default            |
 |---------------------------|--------------------------------------------------------------|--------------------|
 | `node_availability_zones` | Azure availability zones to use                              | `[1, 2, 3]`        |
@@ -105,6 +168,8 @@ The following table lists the configurable parameters that this module accepts.
 | `node_type`               | The Azure VM instance type                                   | `"Standard_D2_v2"` |
 
 ## Outputs
-| Ouput |        Description |
-|-------|--------------------|
-| `id`  | The AKS cluster ID | 
+
+| Ouput               |           Description |
+|---------------------|-----------------------|
+| `id`                | The AKS cluster ID    |
+| `kube_admin_config` | The admin kube config |

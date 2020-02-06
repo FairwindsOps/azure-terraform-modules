@@ -13,7 +13,7 @@ This module provisions an AKS cluster within Azure. By default, this module will
 
 ## Example Usage
 
-```json
+```terraform
 ## Create a resource group to place resources
 resource "azurerm_resource_group" "aks" {
   name     = "myakscluster"
@@ -81,7 +81,7 @@ This module supports static ip addresses for egress. Addresses can be created ah
 
 Example:
 
-```json
+```terraform
 ## Create Public ips for AKS egress
 resource "azurerm_public_ip" "egress" {
   count               = 3

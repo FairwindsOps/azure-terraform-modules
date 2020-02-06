@@ -1,11 +1,14 @@
 data "azurerm_subscription" "current" {}
 
-# locals {
-#   aad_client_sp_id     = var.enable_aad_auth ? azuread_service_principal.client_sp.application_id : null
-#   aad_server_sp_id     = var.enable_aad_auth ? azuread_service_principal.server_sp.application_id : null
-#   aad_server_sp_secret = var.enable_aad_auth ? azuread_service_principal_password.server_sp_password.value : null
-#   aad_tenant_id        = var.enable_aad_auth ? data.azurerm_subscription.current.tenant_id : null
-# }
+locals {
+  ## The following locals are used when the cluser is created with static egress ip addresses. See the docs for usage.
+  load_balancer_profile_enabled = var.managed_outbound_ip_count != null || var.outbound_ip_prefix_ids != null || var.outbound_ip_address_ids != null ? true : null
+  load_balancer_profile = {
+    managed_outbound_ip_count = var.managed_outbound_ip_count
+    outbound_ip_address_ids   = var.outbound_ip_address_ids
+    outbound_ip_prefix_ids    = var.outbound_ip_prefix_ids
+  }
+}
 
 resource "azurerm_kubernetes_cluster" "cluster" {
   depends_on          = [null_resource.delay_after_sp_created, null_resource.consent_delay]
@@ -49,14 +52,23 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
 
+
   service_principal {
     client_id     = azuread_service_principal.aks_sp.application_id
     client_secret = azuread_service_principal_password.aks_sp_password.value
   }
 
   network_profile {
-    network_plugin     = var.network_plugin
-    load_balancer_sku  = var.load_balancer_sku
+    network_plugin    = var.network_plugin
+    load_balancer_sku = var.load_balancer_sku
+    dynamic "load_balancer_profile" {
+      for_each = local.load_balancer_profile_enabled == null ? [] : list(local.load_balancer_profile)
+      content {
+        managed_outbound_ip_count = local.load_balancer_profile.managed_outbound_ip_count
+        outbound_ip_prefix_ids    = local.load_balancer_profile.outbound_ip_prefix_ids
+        outbound_ip_address_ids   = local.load_balancer_profile.outbound_ip_address_ids
+      }
+    }
     network_policy     = var.network_policy
     docker_bridge_cidr = var.docker_bridge_cidr
     pod_cidr           = var.pod_cidr

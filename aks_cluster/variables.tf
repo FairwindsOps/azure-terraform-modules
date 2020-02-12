@@ -14,13 +14,36 @@ variable "node_count" {
   default     = 1
   description = "The default node pool instance count"
 }
+
 variable "enable_auto_scaling" {
   default     = true
   description = "Enable autoscaling on the default node pool"
 }
+
 variable "enable_node_public_ip" {
   default     = false
   description = "Enable public IPs on the default node pool"
+}
+
+variable "enable_http_application_routing" {
+  default = false
+}
+
+variable "enable_kube_dashboard" {
+  default = false
+}
+
+variable "enable_aci_connector_linux" {
+  default = false
+}
+
+variable "enable_azure_policy" {
+  default = false
+}
+
+variable "log_analytics_workspace_id" {
+  default     = null
+  description = "If set, this enables the OMS agent cluster addon"
 }
 
 variable "node_taints" {

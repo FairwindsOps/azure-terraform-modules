@@ -8,6 +8,10 @@ locals {
     outbound_ip_address_ids   = var.outbound_ip_address_ids
     outbound_ip_prefix_ids    = var.outbound_ip_prefix_ids
   }
+  oms_agent_enabled = var.log_analytics_workspace_id != null ? true : null
+  oms_agent_profile = {
+    log_analytics_workspace_id = var.log_analytics_workspace_id
+  }
 }
 
 resource "azurerm_kubernetes_cluster" "cluster" {
@@ -36,6 +40,28 @@ resource "azurerm_kubernetes_cluster" "cluster" {
       server_app_id     = azuread_service_principal.server_sp.application_id
       server_app_secret = azuread_service_principal_password.server_sp_password.value
       tenant_id         = data.azurerm_subscription.current.tenant_id
+    }
+  }
+
+  addon_profile {
+    http_application_routing {
+      enabled = var.enable_http_application_routing
+    }
+    kube_dashboard {
+      enabled = var.enable_kube_dashboard
+    }
+    aci_connector_linux {
+      enabled = var.enable_aci_connector_linux
+    }
+    azure_policy {
+      enabled = var.enable_azure_policy
+    }
+    dynamic "oms_agent" {
+      for_each = local.oms_agent_enabled == false ? [] : list(local.oms_agent_profile)
+      content {
+        enabled                    = true
+        log_analytics_workspace_id = local.oms_agent_profile.log_analytics_workspace_id
+      }
     }
   }
 

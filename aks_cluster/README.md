@@ -162,7 +162,7 @@ The following table lists the configurable parameters that this module accepts.
 | `node_max_count`          | Max amount of nodes to autoscale                             | `20`               |
 | `node_max_pods`           | Max amount of pods per node (subject to CNI)                 | `200`              |
 | `node_min_count`          | Min amount of nodes for autoscaling (must be greater than 0) | `1`                |
-| `node_count`              | The initial node count                                       | `1`                |
+| `node_count`              | The initial node count. This value is ignored after cluster creation, due to autoscaler conflicts.       | `1`                |
 | `node_taints`             | Taints to apply to nodes                                     | `null`             |
 | `os_disk_size_gb`         | The root disk size for VMs                                   | `35`               |
 | `node_type`               | The Azure VM instance type                                   | `"Standard_D2_v2"` |

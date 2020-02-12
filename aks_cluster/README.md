@@ -129,28 +129,33 @@ module "dynamic-cluster" {
 
 The following table lists the configurable parameters that this module accepts.
 
-| Parameter                   | Description                                                  | Default     |
-|-----------------------------|--------------------------------------------------------------|-------------|
-| `admin_username`            | The username set in linux_profile                            | `"admin"`   |
-| `cluster_name`              | Name of the AKS cluster                                      | `None`      |
-| `docker_bridge_cidr`        | The docker daemon host cidr                                  | `null`      |
-| `kubernetes_version`        | The Kubernetes AKS version                                   | `null`      |
-| `load_balancer_sku`         | The load balancer type. Supported values: basic, standard    | `standard`  |
-| `managed_outbound_ip_count` | The number of egress ips provisioned during cluster creation | `null`      |
-| `outbound_ip_address_ids`   | List of `azurerm_public_ip` ids                              | `null`      |
-| `outbound_ip_prefix_ids`    | IDs of the outbound Public IP Address Prefixes               | `null`      |
-| `network_plugin`            | The CNI network plugin to use (only azure, or kubenet)       | `kubenet`   |
-| `node_subnet_id`            | The subnet ID for the default node pool                      | `None`      |
-| `network_policy`            | The network policy for the CNI, dependent on plugin type     | `null`      |
-| `pod_cidr`                  | Network CIDR range for the pod network                       | `null`      |
-| `public_ssh_key_path`       | The SSH public key attached the linux_profile                | `None`      |
-| `region`                    | The Azure region                                             | `None`      |
-| `resource_group_name`       | The resource group to place the AKS cluster in               | `None`      |
-| `service_cidr`              | The CIDR range for Kubernetes services                       | `null`      |
-| `aks_sp_secret`             | Secret password attached to the AKS service principal        | `None`      |
-| `auth_client_sp_secret`     | Secret password attached to the AAD Server service principal | `None`      |
-| `auth_server_sp_secret`     | Secret password attached to the AAD Client service principal | `None`      |
-| `tags`                      | A map of tags to be auto-attached to resources               | `{}`        |
+| Parameter                         | Description                                                  | Default    |
+|-----------------------------------|--------------------------------------------------------------|------------|
+| `admin_username`                  | The username set in linux_profile                            | `"admin"`  |
+| `cluster_name`                    | Name of the AKS cluster                                      | `None`     |
+| `docker_bridge_cidr`              | The docker daemon host cidr                                  | `null`     |
+| `kubernetes_version`              | The Kubernetes AKS version                                   | `null`     |
+| `load_balancer_sku`               | The load balancer type. Supported values: basic, standard    | `standard` |
+| `managed_outbound_ip_count`       | The number of egress ips provisioned during cluster creation | `null`     |
+| `outbound_ip_address_ids`         | List of `azurerm_public_ip` ids                              | `null`     |
+| `outbound_ip_prefix_ids`          | IDs of the outbound Public IP Address Prefixes               | `null`     |
+| `network_plugin`                  | The CNI network plugin to use (only azure, or kubenet)       | `kubenet`  |
+| `node_subnet_id`                  | The subnet ID for the default node pool                      | `None`     |
+| `network_policy`                  | The network policy for the CNI, dependent on plugin type     | `null`     |
+| `pod_cidr`                        | Network CIDR range for the pod network                       | `null`     |
+| `public_ssh_key_path`             | The SSH public key attached the linux_profile                | `None`     |
+| `region`                          | The Azure region                                             | `None`     |
+| `resource_group_name`             | The resource group to place the AKS cluster in               | `None`     |
+| `service_cidr`                    | The CIDR range for Kubernetes services                       | `null`     |
+| `aks_sp_secret`                   | Secret password attached to the AKS service principal        | `None`     |
+| `auth_client_sp_secret`           | Secret password attached to the AAD Server service principal | `None`     |
+| `auth_server_sp_secret`           | Secret password attached to the AAD Client service principal | `None`     |
+| `tags`                            | A map of tags to be auto-attached to resources               | `{}`       |
+| `enable_http_application_routing` | Turns on azure http application routing                      | `false`    |
+| `enable_kube_dashboard`           | Enables the kubernetes web dashboard                         | `false`    |
+| `enable_aci_connector_linux`      | Enables the aci connector                                    | `false`    |
+| `enable_azure_policy`             | Enables the azure policy                                     | `false`    |
+| `log_analytics_workspace_id`      | If set, enables the OMS agent cluster addon                  | `null`     |
 
 ### default_node_pool configuration
 

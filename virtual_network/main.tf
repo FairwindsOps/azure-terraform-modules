@@ -27,4 +27,8 @@ resource "azurerm_virtual_network" "network" {
       address_prefix = subnet.value
     }
   }
+  tags = merge(var.additional_tags, {
+    created-by    = "Terraform"
+    module-source = "github.com/FairwindsOps/azure-terraform-modules/virtual-network"
+  })
 }

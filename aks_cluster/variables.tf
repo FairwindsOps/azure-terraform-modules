@@ -173,6 +173,6 @@ variable "auth_server_sp_secret" {
   description = "The secret to use for the AAD Server service principal account"
 }
 
-variable "tags" {
+variable "additional_tags" {
   default = {}
 }

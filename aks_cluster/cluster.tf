@@ -103,4 +103,11 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     pod_cidr           = var.pod_cidr
     service_cidr       = var.service_cidr
   }
+  tags = merge(
+    var.additional_tags,
+    {
+      cluster-name  = var.cluster_name
+      module-source = "github.com/FairwindsOps/azure-terraform-modules/aks_cluster"
+      created-by    = "Terraform"
+  })
 }

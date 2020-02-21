@@ -150,7 +150,7 @@ The following table lists the configurable parameters that this module accepts.
 | `aks_sp_secret`                   | Secret password attached to the AKS service principal        | `None`     |
 | `auth_client_sp_secret`           | Secret password attached to the AAD Server service principal | `None`     |
 | `auth_server_sp_secret`           | Secret password attached to the AAD Client service principal | `None`     |
-| `tags`                            | A map of tags to be auto-attached to resources               | `{}`       |
+| `additional_tags`                 | A map of tags to be auto-attached to resources               | `{}`       |
 | `enable_http_application_routing` | Turns on azure http application routing                      | `false`    |
 | `enable_kube_dashboard`           | Enables the kubernetes web dashboard                         | `false`    |
 | `enable_aci_connector_linux`      | Enables the aci connector                                    | `false`    |

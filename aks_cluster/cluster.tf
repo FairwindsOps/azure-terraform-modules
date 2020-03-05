@@ -17,7 +17,10 @@ locals {
 resource "azurerm_kubernetes_cluster" "cluster" {
   depends_on = [null_resource.delay_after_sp_created, null_resource.consent_delay]
   lifecycle {
-    ignore_changes = [default_node_pool[0].node_count]
+    ignore_changes = [
+      default_node_pool[0].node_count,
+      default_node_pool[0].node_taints
+    ]
   }
   name                = var.cluster_name
   location            = var.region

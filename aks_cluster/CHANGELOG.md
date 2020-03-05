@@ -1,5 +1,17 @@
 # Changelog
 
+## aks_cluster-v0.6.0
+
+### Fixed
+
+- added lifecycle ignore for node_taints
+
+### Updated
+
+- Upgraded azurerm provider version to 2.0.0
+
+___
+
 ## aks_cluster-v0.5.0
 
 ### Added

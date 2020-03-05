@@ -1,4 +1,10 @@
 resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
+  lifecycle {
+    ignore_changes = [
+      node_taints,
+      node_count
+    ]
+  }
   name                  = var.name
   kubernetes_cluster_id = var.aks_cluster_id
   vm_size               = var.vm_size

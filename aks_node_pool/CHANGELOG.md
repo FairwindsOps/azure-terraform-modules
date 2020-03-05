@@ -1,10 +1,14 @@
 # Changelog
 
-## aks_node_pool-v0.1.1
+## aks_node_pool-v0.2.0
 
 ### Fixed
 
 - added lifecycle ignore for node_taints
+
+### Updated
+
+- Upgraded azurerm provider version to 2.0.0
 
 ___
 

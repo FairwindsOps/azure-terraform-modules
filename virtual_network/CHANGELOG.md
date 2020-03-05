@@ -1,5 +1,13 @@
 # Changelog
 
+## virtual_network-v0.4.0
+
+### Updated
+
+- Upgraded azurerm provider version to 2.0.0
+
+___
+
 ## virtual_network-v0.3.0
 
 ### Added

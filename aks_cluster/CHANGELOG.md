@@ -1,5 +1,13 @@
 # Changelog
 
+## aks_cluster-v0.5.1
+
+### Fixed
+
+- added lifecycle ignore for node_taints
+
+___
+
 ## aks_cluster-v0.5.0
 
 ### Added

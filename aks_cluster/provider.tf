@@ -5,3 +5,7 @@ terraform {
     azuread = ">= 0.3"
   }
 }
+
+provider "azurerm" {
+  features {}
+}

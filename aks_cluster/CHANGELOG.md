@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- conditional logic on optional oms_agent now works
+
 ## aks_cluster-v0.6.0
 
 ### Fixed

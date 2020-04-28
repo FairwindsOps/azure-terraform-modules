@@ -8,7 +8,7 @@ locals {
     outbound_ip_address_ids   = var.outbound_ip_address_ids
     outbound_ip_prefix_ids    = var.outbound_ip_prefix_ids
   }
-  oms_agent_enabled = var.log_analytics_workspace_id != null ? true : null
+  oms_agent_enabled = var.log_analytics_workspace_id != null ? true : false
   oms_agent_profile = {
     log_analytics_workspace_id = var.log_analytics_workspace_id
   }
@@ -62,7 +62,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     dynamic "oms_agent" {
       for_each = local.oms_agent_enabled == false ? [] : list(local.oms_agent_profile)
       content {
-        enabled                    = true
+        enabled                    = local.oms_agent_enabled
         log_analytics_workspace_id = local.oms_agent_profile.log_analytics_workspace_id
       }
     }

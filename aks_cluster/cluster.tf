@@ -12,6 +12,7 @@ locals {
   oms_agent_profile = {
     log_analytics_workspace_id = var.log_analytics_workspace_id
   }
+  use_aks_sp = var.aks_sp_secret != null ? true : false
 }
 
 resource "azurerm_kubernetes_cluster" "cluster" {
@@ -86,8 +87,19 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     vnet_subnet_id        = var.node_subnet_id
   }
 
-  identity {
-    type = "SystemAssigned"
+  dynamic "identity" {
+    for_each = local.use_aks_sp == true ? [] : list(local.use_aks_sp)
+    content {
+      type = "SystemAssigned"
+    }
+  }
+
+  dynamic "service_principal" {
+    for_each = local.use_aks_sp == false ? [] : list(local.use_aks_sp)
+    content {
+      client_id     = azuread_service_principal.aks_sp[0].application_id
+      client_secret = azuread_service_principal_password.aks_sp_password[0].value
+    }
   }
 
   network_profile {

@@ -160,6 +160,12 @@ variable "service_cidr" {
   default     = null
 }
 
+variable "aks_sp_secret" {
+  type        = string
+  default     = null
+  description = "The secret to use for the AKS service principal account"
+}
+
 variable "auth_client_sp_secret" {
   type        = string
   default     = null

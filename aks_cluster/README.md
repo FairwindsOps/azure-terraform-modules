@@ -61,6 +61,7 @@ The following table lists the configurable parameters that this module accepts.
 | `region`                          | The Azure region                                             | `None`     |
 | `resource_group_name`             | The resource group to place the AKS cluster in               | `None`     |
 | `service_cidr`                    | The CIDR range for Kubernetes services                       | `null`     |
+| `aks_sp_secret`                   | Optional service principal password for the AKS cluster      | `null`     |
 | `auth_client_sp_secret`           | Secret password attached to the AAD Server service principal | `null`     |
 | `auth_server_sp_secret`           | Secret password attached to the AAD Client service principal | `null`     |
 | `additional_tags`                 | A map of tags to be auto-attached to resources               | `{}`       |

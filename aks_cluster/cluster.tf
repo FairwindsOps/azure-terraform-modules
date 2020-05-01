@@ -37,12 +37,15 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
   role_based_access_control {
-    enabled = true
-    azure_active_directory {
-      client_app_id     = azuread_service_principal.client_sp.application_id
-      server_app_id     = azuread_service_principal.server_sp.application_id
-      server_app_secret = azuread_service_principal_password.server_sp_password.value
-      tenant_id         = data.azurerm_subscription.current.tenant_id
+    enabled = var.enable_aad_auth
+    dynamic "azure_active_directory" {
+      for_each = var.enable_aad_auth == false ? [] : list(var.enable_aad_auth)
+      content {
+        client_app_id     = azuread_service_principal.client_sp[0].application_id
+        server_app_id     = azuread_service_principal.server_sp[0].application_id
+        server_app_secret = azuread_service_principal_password.server_sp_password[0].value
+        tenant_id         = data.azurerm_subscription.current.tenant_id
+      }
     }
   }
 
@@ -83,11 +86,8 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     vnet_subnet_id        = var.node_subnet_id
   }
 
-
-
-  service_principal {
-    client_id     = azuread_service_principal.aks_sp.application_id
-    client_secret = azuread_service_principal_password.aks_sp_password.value
+  identity {
+    type = "SystemAssigned"
   }
 
   network_profile {

@@ -1,6 +1,15 @@
 # Changelog
 
-## Unreleased
+## aks_cluster-v1.0.0
+
+### Added
+- AAD integration is now optional and defaults to false, new variable `enable_aad_auth`
+- Additional outputs for `kube_config`
+- Created examples
+- Updated `azurerm` provider to `v2.7.0`
+
+### Removed
+- A service principal password is no longer required. The module now uses `identity {type="SystemAssigned}`.
 
 ### Fixed
 - conditional logic on optional oms_agent now works

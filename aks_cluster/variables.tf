@@ -15,6 +15,11 @@ variable "node_count" {
   description = "The default node pool instance count"
 }
 
+variable "enable_aad_auth" {
+  default     = false
+  description = "Enable Kubernetes API Azure AD authentication"
+}
+
 variable "enable_auto_scaling" {
   default     = true
   description = "Enable autoscaling on the default node pool"
@@ -153,12 +158,6 @@ variable "resource_group_name" {
 variable "service_cidr" {
   description = "The CIDR for kubernetes services"
   default     = null
-}
-
-variable "aks_sp_secret" {
-  type        = string
-  default     = null
-  description = "The secret to use for the AKS service principal account"
 }
 
 variable "auth_client_sp_secret" {

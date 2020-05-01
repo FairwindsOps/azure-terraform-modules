@@ -1,6 +1,6 @@
 # AKS Cluster
 
-This module provisions an AKS cluster within Azure. By default, this module will provision three AAD Applications and tie the cluster to Azure Active Directory. A `clusteradmin` group is created in AAD, where AKS administrators can be added. If your AZ account does not have AAD privileges, Terraform will exit with an error. An AAD administrator will need to approve the API request, then Terraform can be run again.
+This module provisions an AKS cluster within Azure. The module can be configured to enable AAD RBAC integration. Review the table below for full configuration details. Check out the example directory for different ways to use the module.
 
 ## Requirements
 
@@ -9,46 +9,6 @@ This module provisions an AKS cluster within Azure. By default, this module will
 - Logged into the Azure cli
 - Azure resource group
 - Azure virtual network and subnet
-- Azure AAD Admin Privilges
-
-## Example Usage
-
-```terraform
-## Create a resource group to place resources
-resource "azurerm_resource_group" "aks" {
-  name     = "myakscluster"
-  location = "centralus"
-}
-
-## Create the virtual network for an AKS cluster
-module "network" {
-  source              = "git@github.com:FairwindsOps/azure-terraform-modules.git//virtual_network"
-  region              = "centralus"
-  resource_group_name = azurerm_resource_group.aks.name
-  name                = "myakscluster"
-  network_cidr_prefix = "10.64.0.0"
-  network_cidr_suffix = 10
-  subnets = [{
-    name       = "aks-subnet"
-    cidr_block = 16
-  }]
-}
-
-## Create the AKS cluster
-module "cluster" {
-  source                   = "git@github.com:FairwindsOps/azure-terraform-modules.git//aks_cluster"
-  region                   = "centralus"
-  cluster_name             = "myakscluster"
-  resource_group_name      = azurerm_resource_group.aks.name
-  aks_sp_secret            = "some-super-secret-password"
-  auth_client_sp_secret    = "some-super-secret-password"
-  auth_server_sp_secret    = "some-super-secret-password"  
-  node_subnet_id           = module.network.subnet_ids[0] # use the subnet from the module above
-  network_plugin           = "azure"
-  network_policy           = "calico"
-  public_ssh_key_path      = "/path/to/ssh_pub_key.rsa"
-}
-```
 
 ## Kube Configuration
 
@@ -57,14 +17,13 @@ Once the cluster has been provisioned, it can be accessed with either the `admin
 ### admin credentials
 
 If needed, use the admin credentials directly.
-
 ```bash
 $ az aks get-credentials --resource-group myakscluster --name myakscluster --admin
 ```
 
 ### AAD User
 
-To authenticate as an AAD user, first add the user to the `clusteradmin` group created by Terraform.
+If `enable_aad_auth` is set to true, you can authenticate against the cluster using your az account. First add the user to the `clusteradmin` group in AAD created by Terraform.
 
 ```bash
 $ az aks get-credentials --resource-group kubernates --name myakscluster
@@ -72,58 +31,13 @@ Merged "myakscluster" as current context in /home/$user/.kube/config
 $ kubectl get nodes
 To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code FLBV5XKT7 to authenticate.
 NAME                                STATUS   ROLES   AGE   VERSION
-aks-default-14693408-vmss000000     Ready    agent   34m   v1.14.8
+aks-default-14693408-vmss000000     Ready    agent   34m   v1.15.9
 ```
 
 ### Egress IP Configuration
 
 This module supports static ip addresses for egress. Addresses can be created ahead of time, or provisioned during cluster creation. This is configured via `managed_outbound_ip_count`, `outbound_ip_address_ids`, `outbound_ip_prefix_ids`. See the `variables` section for details. **Do not mix and match these variables.**
 
-Example:
-
-```terraform
-## Create Public ips for AKS egress
-resource "azurerm_public_ip" "egress" {
-  count               = 3
-  name                = "egress-${count.index}"
-  location            = "centralus"
-  resource_group_name = azurerm_resource_group.aks.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
-
-## Create the AKS cluster
-module "cluster" {
-  source                   = "git@github.com:FairwindsOps/azure-terraform-modules.git//aks_cluster"
-  region                   = "centralus"
-  cluster_name             = "myakscluster"
-  resource_group_name      = azurerm_resource_group.aks.name
-  aks_sp_secret            = "some-super-secret-password"
-  auth_client_sp_secret    = "some-super-secret-password"
-  auth_server_sp_secret    = "some-super-secret-password"
-  node_subnet_id           = module.network.subnet_ids[0]
-  network_plugin           = "azure"
-  network_policy           = "calico"
-  outbound_ip_address_ids = azurerm_public_ip.egress.*.id # input egress ids from above
-  public_ssh_key_path      = "/path/to/ssh_pub_key.rsa"
-}
-
-## Create AKS cluster with dynamically provisioned IP addresses
-module "dynamic-cluster" {
-  source                    = "git@github.com:FairwindsOps/azure-terraform-modules.git//aks_cluster"
-  region                    = "centralus"
-  cluster_name              = "mydynamicakscluster"
-  resource_group_name       = azurerm_resource_group.aks.name
-  aks_sp_secret             = "some-super-secret-password"
-  auth_client_sp_secret     = "some-super-secret-password"
-  auth_server_sp_secret     = "some-super-secret-password"
-  node_subnet_id            = module.network.subnet_ids[0]
-  network_plugin            = "azure"
-  network_policy            = "calico"
-  managed_outbound_ip_count = 3
-  public_ssh_key_path       = "/path/to/ssh_pub_key.rsa"
-}
-```
 
 ## Configuration
 
@@ -147,10 +61,10 @@ The following table lists the configurable parameters that this module accepts.
 | `region`                          | The Azure region                                             | `None`     |
 | `resource_group_name`             | The resource group to place the AKS cluster in               | `None`     |
 | `service_cidr`                    | The CIDR range for Kubernetes services                       | `null`     |
-| `aks_sp_secret`                   | Secret password attached to the AKS service principal        | `None`     |
-| `auth_client_sp_secret`           | Secret password attached to the AAD Server service principal | `None`     |
-| `auth_server_sp_secret`           | Secret password attached to the AAD Client service principal | `None`     |
+| `auth_client_sp_secret`           | Secret password attached to the AAD Server service principal | `null`     |
+| `auth_server_sp_secret`           | Secret password attached to the AAD Client service principal | `null`     |
 | `additional_tags`                 | A map of tags to be auto-attached to resources               | `{}`       |
+| `enable_aad_auth`                 | Enable AAD authentication for Kubernetes API                 | `false`    |
 | `enable_http_application_routing` | Turns on azure http application routing                      | `false`    |
 | `enable_kube_dashboard`           | Enables the kubernetes web dashboard                         | `false`    |
 | `enable_aci_connector_linux`      | Enables the aci connector                                    | `false`    |

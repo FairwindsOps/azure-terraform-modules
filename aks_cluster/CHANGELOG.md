@@ -1,6 +1,6 @@
 # Changelog
 
-## aks_cluster-v1.0.0
+## aks_cluster-v0.7.0
 
 ### Added
 - AAD integration is now optional and defaults to false, new variable `enable_aad_auth`

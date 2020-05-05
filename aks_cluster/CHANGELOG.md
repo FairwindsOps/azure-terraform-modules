@@ -6,10 +6,10 @@
 - AAD integration is now optional and defaults to false, new variable `enable_aad_auth`
 - Additional outputs for `kube_config`
 - Created examples
-- Updated `azurerm` provider to `v2.7.0`
+- Updated `azurerm` provider to `v2.5.0`
 
 ### Removed
-- A service principal password is no longer required. The module now uses `identity {type="SystemAssigned}`.
+- A service principal password is no longer required. The module now uses `identity {type="SystemAssigned}` by default.
 
 ### Fixed
 - conditional logic on optional oms_agent now works

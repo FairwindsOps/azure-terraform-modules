@@ -2,7 +2,7 @@
 
 ## aks_node_pool-v0.3.0
 ### Updated
-- bumped azurerm provider to v2.7.0
+- bumped azurerm provider to v2.5.0
 
 ## aks_node_pool-v0.2.0
 

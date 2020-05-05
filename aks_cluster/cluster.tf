@@ -2,7 +2,7 @@ data "azurerm_subscription" "current" {}
 
 locals {
   ## The following locals are used when the cluser is created with static egress ip addresses. See the docs for usage.
-  load_balancer_profile_enabled = var.managed_outbound_ip_count != null || var.outbound_ip_prefix_ids != null || var.outbound_ip_address_ids != null ? true : null
+  load_balancer_profile_enabled = var.managed_outbound_ip_count != null || var.outbound_ip_prefix_ids != null || var.outbound_ip_address_ids != null ? true : false
   load_balancer_profile = {
     managed_outbound_ip_count = var.managed_outbound_ip_count
     outbound_ip_address_ids   = var.outbound_ip_address_ids
@@ -106,7 +106,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     network_plugin    = var.network_plugin
     load_balancer_sku = var.load_balancer_sku
     dynamic "load_balancer_profile" {
-      for_each = local.load_balancer_profile_enabled == null ? [] : list(local.load_balancer_profile)
+      for_each = local.load_balancer_profile_enabled == false ? [] : list(local.load_balancer_profile)
       content {
         managed_outbound_ip_count = local.load_balancer_profile.managed_outbound_ip_count
         outbound_ip_prefix_ids    = local.load_balancer_profile.outbound_ip_prefix_ids
@@ -118,6 +118,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     pod_cidr           = var.pod_cidr
     service_cidr       = var.service_cidr
   }
+
   tags = merge(
     var.additional_tags,
     {

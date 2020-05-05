@@ -25,6 +25,11 @@ variable "enable_auto_scaling" {
   description = "Enable autoscaling on the default node pool"
 }
 
+variable "enable_rbac" {
+  default     = true
+  description = "Enable RBAC on the Kubernetes API"
+}
+
 variable "enable_node_public_ip" {
   default     = false
   description = "Enable public IPs on the default node pool"

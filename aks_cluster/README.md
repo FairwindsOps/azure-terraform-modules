@@ -66,6 +66,7 @@ The following table lists the configurable parameters that this module accepts.
 | `auth_server_sp_secret`           | Secret password attached to the AAD Client service principal | `null`     |
 | `additional_tags`                 | A map of tags to be auto-attached to resources               | `{}`       |
 | `enable_aad_auth`                 | Enable AAD authentication for Kubernetes API                 | `false`    |
+| `enable_rbac`                     | Enable RBAC for the Kubernetes API                           | `true`     |
 | `enable_http_application_routing` | Turns on azure http application routing                      | `false`    |
 | `enable_kube_dashboard`           | Enables the kubernetes web dashboard                         | `false`    |
 | `enable_aci_connector_linux`      | Enables the aci connector                                    | `false`    |

@@ -1,6 +1,4 @@
-# Role assignment
-
-# Use ADMIN credentials
+## Use aks credentials
 provider "kubernetes" {
   host                   = azurerm_kubernetes_cluster.cluster.kube_config.0.host
   client_certificate     = base64decode(azurerm_kubernetes_cluster.cluster.kube_config.0.client_certificate)
@@ -9,7 +7,7 @@ provider "kubernetes" {
   load_config_file       = false
 }
 
-# Create cluster role binding to the clusteradmin AAD group
+## Create cluster role binding for the clusteradmin AAD group
 
 resource "kubernetes_cluster_role_binding" "aad_integration" {
   count = var.enable_aad_auth ? 1 : 0

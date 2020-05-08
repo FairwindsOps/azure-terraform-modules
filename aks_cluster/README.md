@@ -23,7 +23,7 @@ $ az aks get-credentials --resource-group myakscluster --name myakscluster --adm
 
 ### AAD User
 
-If `enable_aad_auth` is set to true, you can authenticate against the cluster using your az account. First add the user to the `clusteradmin` group in AAD created by Terraform.
+If `enable_aad_auth` is set to true, you can authenticate against the cluster using your az account. Add the user to the `clusteradmin` group in AAD created by Terraform. Then use the az cli to get the credentials.
 
 ```bash
 $ az aks get-credentials --resource-group kubernates --name myakscluster

@@ -2,16 +2,17 @@ data "azurerm_subscription" "current" {}
 
 locals {
   ## The following locals are used when the cluser is created with static egress ip addresses. See the docs for usage.
-  load_balancer_profile_enabled = var.managed_outbound_ip_count != null || var.outbound_ip_prefix_ids != null || var.outbound_ip_address_ids != null ? true : null
+  load_balancer_profile_enabled = var.managed_outbound_ip_count != null || var.outbound_ip_prefix_ids != null || var.outbound_ip_address_ids != null ? true : false
   load_balancer_profile = {
     managed_outbound_ip_count = var.managed_outbound_ip_count
     outbound_ip_address_ids   = var.outbound_ip_address_ids
     outbound_ip_prefix_ids    = var.outbound_ip_prefix_ids
   }
-  oms_agent_enabled = var.log_analytics_workspace_id != null ? true : null
+  oms_agent_enabled = var.log_analytics_workspace_id != null ? true : false
   oms_agent_profile = {
     log_analytics_workspace_id = var.log_analytics_workspace_id
   }
+  use_aks_sp = var.aks_sp_secret != null ? true : false
 }
 
 resource "azurerm_kubernetes_cluster" "cluster" {
@@ -37,12 +38,15 @@ resource "azurerm_kubernetes_cluster" "cluster" {
   }
 
   role_based_access_control {
-    enabled = true
-    azure_active_directory {
-      client_app_id     = azuread_service_principal.client_sp.application_id
-      server_app_id     = azuread_service_principal.server_sp.application_id
-      server_app_secret = azuread_service_principal_password.server_sp_password.value
-      tenant_id         = data.azurerm_subscription.current.tenant_id
+    enabled = var.enable_rbac
+    dynamic "azure_active_directory" {
+      for_each = var.enable_aad_auth == false ? [] : list(var.enable_aad_auth)
+      content {
+        client_app_id     = azuread_service_principal.client_sp[0].application_id
+        server_app_id     = azuread_service_principal.server_sp[0].application_id
+        server_app_secret = azuread_service_principal_password.server_sp_password[0].value
+        tenant_id         = data.azurerm_subscription.current.tenant_id
+      }
     }
   }
 
@@ -62,7 +66,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     dynamic "oms_agent" {
       for_each = local.oms_agent_enabled == false ? [] : list(local.oms_agent_profile)
       content {
-        enabled                    = true
+        enabled                    = local.oms_agent_enabled
         log_analytics_workspace_id = local.oms_agent_profile.log_analytics_workspace_id
       }
     }
@@ -83,18 +87,26 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     vnet_subnet_id        = var.node_subnet_id
   }
 
+  dynamic "identity" {
+    for_each = local.use_aks_sp == true ? [] : list(local.use_aks_sp)
+    content {
+      type = "SystemAssigned"
+    }
+  }
 
-
-  service_principal {
-    client_id     = azuread_service_principal.aks_sp.application_id
-    client_secret = azuread_service_principal_password.aks_sp_password.value
+  dynamic "service_principal" {
+    for_each = local.use_aks_sp == false ? [] : list(local.use_aks_sp)
+    content {
+      client_id     = azuread_service_principal.aks_sp[0].application_id
+      client_secret = azuread_service_principal_password.aks_sp_password[0].value
+    }
   }
 
   network_profile {
     network_plugin    = var.network_plugin
     load_balancer_sku = var.load_balancer_sku
     dynamic "load_balancer_profile" {
-      for_each = local.load_balancer_profile_enabled == null ? [] : list(local.load_balancer_profile)
+      for_each = local.load_balancer_profile_enabled == false ? [] : list(local.load_balancer_profile)
       content {
         managed_outbound_ip_count = local.load_balancer_profile.managed_outbound_ip_count
         outbound_ip_prefix_ids    = local.load_balancer_profile.outbound_ip_prefix_ids
@@ -106,6 +118,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     pod_cidr           = var.pod_cidr
     service_cidr       = var.service_cidr
   }
+
   tags = merge(
     var.additional_tags,
     {

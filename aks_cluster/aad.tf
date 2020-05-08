@@ -1,4 +1,7 @@
+
+
 resource "azuread_application" "ad_server_application" {
+  count                      = var.enable_aad_auth ? 1 : 0
   name                       = "${var.cluster_name}-aks-srv"
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = false
@@ -36,72 +39,80 @@ resource "azuread_application" "ad_server_application" {
   }
 }
 
-
 resource "azuread_application" "ad_client_application" {
+  count                      = var.enable_aad_auth ? 1 : 0
   name                       = "${var.cluster_name}-aks-client"
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = false
   type                       = "native"
   reply_urls                 = ["https://login.microsoftonline.com/common/oauth2/nativeclient"]
   required_resource_access {
-    resource_app_id = azuread_application.ad_server_application.application_id
+    resource_app_id = azuread_application.ad_server_application[0].application_id
     resource_access {
-      id   = azuread_application.ad_server_application.oauth2_permissions[0].id
+      id   = azuread_application.ad_server_application[0].oauth2_permissions[0].id
       type = "Scope"
     }
   }
 }
 
 resource "azuread_service_principal" "server_sp" {
-  application_id = azuread_application.ad_server_application.application_id
+  count          = var.enable_aad_auth ? 1 : 0
+  application_id = azuread_application.ad_server_application[0].application_id
 }
 
 resource "azuread_service_principal_password" "server_sp_password" {
+  count = var.enable_aad_auth ? 1 : 0
   lifecycle {
     ignore_changes = [end_date]
   }
-  service_principal_id = azuread_service_principal.server_sp.id
+  service_principal_id = azuread_service_principal.server_sp[0].id
   value                = var.auth_server_sp_secret
   end_date             = timeadd(timestamp(), "43800h") # 5 years
 }
 
 resource "azuread_service_principal" "client_sp" {
-  application_id = azuread_application.ad_client_application.application_id
+  count          = var.enable_aad_auth ? 1 : 0
+  application_id = azuread_application.ad_client_application[0].application_id
 }
 
 resource "azuread_service_principal_password" "client_sp_password" {
+  count = var.enable_aad_auth ? 1 : 0
   lifecycle {
     ignore_changes = [end_date]
   }
-  service_principal_id = azuread_service_principal.client_sp.id
+  service_principal_id = azuread_service_principal.client_sp[0].id
   value                = var.auth_client_sp_secret
   end_date             = timeadd(timestamp(), "43800h") # 5 years
 }
 
 # Create Service Principal for AKS cluster
 resource "azuread_application" "aks_sp_application" {
+  count                      = local.use_aks_sp ? 1 : 0
   name                       = "${var.cluster_name}-aks"
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = false
 }
 
 resource "azuread_service_principal" "aks_sp" {
-  application_id = azuread_application.aks_sp_application.application_id
+  count          = local.use_aks_sp ? 1 : 0
+  application_id = azuread_application.aks_sp_application[0].application_id
 }
 
 resource "azuread_service_principal_password" "aks_sp_password" {
+  count = local.use_aks_sp ? 1 : 0
   lifecycle {
     ignore_changes = [end_date]
   }
-  service_principal_id = azuread_service_principal.aks_sp.id
+  service_principal_id = azuread_service_principal.aks_sp[0].id
   value                = var.aks_sp_secret
   end_date             = timeadd(timestamp(), "43800h") # 5 years
 }
 
 resource "azurerm_role_assignment" "aks_sp_role_assignment" {
+  count                = local.use_aks_sp ? 1 : 0
   scope                = data.azurerm_subscription.current.id
   role_definition_name = "Contributor"
-  principal_id         = azuread_service_principal.aks_sp.id
+  principal_id         = azuread_service_principal.aks_sp[0].id
 
   depends_on = [
     azuread_service_principal_password.aks_sp_password
@@ -110,11 +121,13 @@ resource "azurerm_role_assignment" "aks_sp_role_assignment" {
 
 # Create a cluster admin group
 resource "azuread_group" "aks-aad-clusteradmins" {
-  name = "${var.cluster_name}-clusteradmin"
+  count = var.enable_aad_auth ? 1 : 0
+  name  = "${var.cluster_name}-clusteradmin"
 }
 
 # We need to wait for service principals to propagate in Azure
 resource "null_resource" "delay_after_sp_created" {
+  count = var.enable_aad_auth ? 1 : 0
   provisioner "local-exec" {
     interpreter = ["bash", "-c"]
     command     = "sleep 60"
@@ -128,9 +141,10 @@ resource "null_resource" "delay_after_sp_created" {
 
 # Terraform does not provide a way to override Admin consent, we need to shell out to az cli
 resource "null_resource" "grant_server_application_privs" {
+  count = var.enable_aad_auth ? 1 : 0
   provisioner "local-exec" {
     interpreter = ["bash", "-c"]
-    command     = "GRANTS=$(az ad app permission list-grants --id ${azuread_application.ad_server_application.application_id}); if [[ $GRANTS == \"[]\" ]]; then az ad app permission admin-consent --id ${azuread_application.ad_server_application.application_id}; else true; fi"
+    command     = "GRANTS=$(az ad app permission list-grants --id ${azuread_application.ad_server_application[0].application_id}); if [[ $GRANTS == \"[]\" ]]; then az ad app permission admin-consent --id ${azuread_application.ad_server_application[0].application_id}; else true; fi"
   }
   depends_on = [
     null_resource.delay_after_sp_created
@@ -139,6 +153,7 @@ resource "null_resource" "grant_server_application_privs" {
 
 # Wait for privs to propagate
 resource "null_resource" "consent_delay" {
+  count = var.enable_aad_auth ? 1 : 0
   provisioner "local-exec" {
     interpreter = ["bash", "-c"]
     command     = "sleep 60"

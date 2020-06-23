@@ -1,5 +1,10 @@
 # Changelog
 
+## aks_cluster-v0.7.1
+
+### Removed
+- Removed `load_config_file` from the kubernetes provider
+
 ## aks_cluster-v0.7.0
 
 ### Added

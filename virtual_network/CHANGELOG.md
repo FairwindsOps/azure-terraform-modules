@@ -1,6 +1,6 @@
 # Changelog
 
-## aks_node_pool-v0.6.0
+## virtual_network-v0.6.0
 
 ### Updated
 - updated `azurerm` provider to `2.16.0`

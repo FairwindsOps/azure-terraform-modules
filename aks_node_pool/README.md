@@ -49,10 +49,11 @@ module "cluster" {
 
 ## Create the node pool
 module "node_pool" {
-  source         = "git@github.com:FairwindsOps/azure-terraform-modules.git//aks_node_pool"
-  name           = "myakspool"
-  aks_cluster_id = module.cluster.id
-  node_subnet_id = module.network.subnets[0]
+  source             = "git@github.com:FairwindsOps/azure-terraform-modules.git//aks_node_pool"
+  name               = "myakspool"
+  aks_cluster_id     = module.cluster.id
+  kubernetes_version = "1.16.9"
+  node_subnet_id     = module.network.subnets[0]
 }
 
 ```
@@ -67,6 +68,7 @@ The following table lists the configurable parameters that this module accepts.
 | `availability_zones`    | Azure availability zones to use                                | `[1, 2, 3]`        |
 | `enable_auto_scaling`   | Boolean to enable/disable autoscaling                          | `true`             |
 | `enable_node_public_ip` | Boolean to enable allocation of public ips to nodes            | `false`            |
+| `kubernetes_version`    | Kubernetes version the node pool will run                      | `None`             |
 | `max_count`             | Max amount of nodes to autoscale                               | `null`             |
 | `max_pods`              | Max amount of pods per node (subject to CNI)                   | `200`              |
 | `min_count`             | Min amount of nodes for autoscaling (must be greater than 0)   | `null`             |

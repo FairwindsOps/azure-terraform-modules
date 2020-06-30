@@ -1,5 +1,12 @@
 # Changelog
 
+## aks_node_pool-v0.4.0
+### Added
+- `kubernetes_version` is now a required variable
+
+### Updated
+- updated `azurerm` provider to `2.16.0`
+
 ## aks_node_pool-v0.3.0
 ### Updated
 - bumped azurerm provider to v2.5.0

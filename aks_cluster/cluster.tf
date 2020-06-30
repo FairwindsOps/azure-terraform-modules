@@ -7,6 +7,8 @@ locals {
     managed_outbound_ip_count = var.managed_outbound_ip_count
     outbound_ip_address_ids   = var.outbound_ip_address_ids
     outbound_ip_prefix_ids    = var.outbound_ip_prefix_ids
+    outbound_ports_allocated  = var.outbound_ports_allocated
+    idle_timeout_in_minutes   = var.load_balancer_idle_timeout_in_minutes
   }
   oms_agent_enabled = var.log_analytics_workspace_id != null ? true : false
   oms_agent_profile = {
@@ -85,6 +87,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     availability_zones    = var.node_availability_zones
     max_pods              = var.node_max_pods
     vnet_subnet_id        = var.node_subnet_id
+    orchestrator_version  = var.kubernetes_version
   }
 
   dynamic "identity" {
@@ -111,6 +114,8 @@ resource "azurerm_kubernetes_cluster" "cluster" {
         managed_outbound_ip_count = local.load_balancer_profile.managed_outbound_ip_count
         outbound_ip_prefix_ids    = local.load_balancer_profile.outbound_ip_prefix_ids
         outbound_ip_address_ids   = local.load_balancer_profile.outbound_ip_address_ids
+        outbound_ports_allocated  = local.load_balancer_profile.outbound_ports_allocated
+        idle_timeout_in_minutes   = local.load_balancer_profile.idle_timeout_in_minutes
       }
     }
     network_policy     = var.network_policy

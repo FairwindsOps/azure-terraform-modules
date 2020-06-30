@@ -1,5 +1,14 @@
 # Changelog
 
+## aks_cluster-v0.8.0
+### Added
+- `load_balancer_idle_timeout_in_minutes`
+- `outbound_ports_allocated`
+- `orchestrator_version` is now set on the default node pool
+
+### Updated
+- updated `azurerm` provider to `2.16.0`
+
 ## aks_cluster-v0.7.1
 
 ### Removed

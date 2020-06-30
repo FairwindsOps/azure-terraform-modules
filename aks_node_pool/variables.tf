@@ -76,3 +76,8 @@ variable "availability_zones" {
   description = "The availablility zones to place the nodes. Dependent on selected region"
   default     = [1, 2, 3]
 }
+
+variable "kubernetes_version" {
+  type = string
+  description = "The Kubernetes version the node pool will use."
+}

@@ -111,6 +111,16 @@ variable "outbound_ip_prefix_ids" {
   type    = list(string)
 }
 
+variable "outbound_ports_allocated" {
+  default = 0
+  type = number
+}
+
+variable "load_balancer_idle_timeout_in_minutes" {
+  default = 30
+  type = number
+}
+
 variable "kubernetes_version" {
   description = "The AKS Kubernetes version"
   default     = null

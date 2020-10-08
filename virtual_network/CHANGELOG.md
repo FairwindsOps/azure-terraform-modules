@@ -1,5 +1,12 @@
 # Changelog
 
+## virtual_network-v0.8.0
+### Added
+
+Support for Azure DDoS Protection Plans.  Inputs:
+- enable_ddos_protection_plan `boolean`
+- ddos_protection_plan_id `string` Id of a protection plan.
+
 ## virtual_network-v0.7.0
 ### Breaking
 

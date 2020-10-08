@@ -43,4 +43,12 @@ variable "additional_tags" {
   default = {}
 }
 
+variable "enable_ddos_protection_plan" {
+  default = false
+  type = bool
+}
 
+variable "ddos_protection_plan_id" {
+  default = null
+  type = string
+}

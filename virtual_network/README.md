@@ -55,15 +55,17 @@ module "adv_network" {
 
 The following table lists the configurable parameters that this module accepts.
 
-| Parameter             | Description                                              | Default        |
-|-----------------------|----------------------------------------------------------|----------------|
-| `region`              | Azure region                                             | `None`         |
-| `name`                | Name of the virtual network                              | `None`         |
-| `network_cidr_prefix` | The network cidr ip prefix                               | `"10.0.0.0"`   |
-| `network_cidr_suffix` | The network cidr suffix                                  | `8`            |
-| `networks`            | A list of objects that contain subnets and desired size  | `[{`<br>`name = "subnet-1"`<br>`cidr_block = 18`<br>`},`<br>`{`<br>`name = "subnet-2"`<br>`cidr_block = 18`<br>`}]` |
-| `resource_group_name` | The resource group to place the Azure network            | `None`         |
-| `additional_tags`     | A map of tags to be appended to Azure objects            | `{}`           |
+| Parameter                     | Description                                              | Default        |
+|-------------------------------|----------------------------------------------------------|----------------|
+| `ddos_protection_plan_id`     | id of a DDoS Protection Plan                             | `None`         |
+| `enable_ddos_protection_plan` | Enable plan if `true`                                    | `false`        |
+| `region`                      | Azure region                                             | `None`         |
+| `name`                        | Name of the virtual network                              | `None`         |
+| `network_cidr_prefix`         | The network cidr ip prefix                               | `"10.0.0.0"`   |
+| `network_cidr_suffix`         | The network cidr suffix                                  | `8`            |
+| `networks`                    | A list of objects that contain subnets and desired size  | `[{`<br>`name = "subnet-1"`<br>`cidr_block = 18`<br>`},`<br>`{`<br>`name = "subnet-2"`<br>`cidr_block = 18`<br>`}]` |
+| `resource_group_name`         | The resource group to place the Azure network            | `None`         |
+| `additional_tags`             | A map of tags to be appended to Azure objects            | `{}`           |
 
 ## Outputs
 | Output       | Description                                    |

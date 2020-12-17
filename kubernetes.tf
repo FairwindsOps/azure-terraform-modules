@@ -1,4 +1,3 @@
-
 ## Use aks credentials
 provider "kubernetes" {
   host                   = azurerm_kubernetes_cluster.cluster.kube_config.0.host

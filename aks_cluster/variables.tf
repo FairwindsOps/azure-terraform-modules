@@ -155,9 +155,9 @@ variable "pod_cidr" {
   default     = null
 }
 
-variable "public_ssh_key_path" {
+variable "public_ssh_key" {
   type        = string
-  description = "The path to the ssh pub file, tied to the admin user in linux_profile"
+  description = "Public SSH key tied to the admin user in linux_profile"
 }
 
 variable "region" {

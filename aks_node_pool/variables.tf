@@ -57,7 +57,7 @@ variable "max_pods" {
 variable "max_surge" {
   type        = string
   description = "How many more nodes per pool can be created during an image upgrade process, expressed as a percentage of the current number of nodes in the pool."
-  default     = "100%"
+  default     = "25%"
 }
 
 variable "os_type" {

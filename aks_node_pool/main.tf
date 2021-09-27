@@ -20,4 +20,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pool" {
   os_disk_size_gb       = var.os_disk_size_gb
   os_type               = var.os_type
   vnet_subnet_id        = var.node_subnet_id
+
+  upgrade_settings {
+    max_surge             = var.max_surge
+  }
 }

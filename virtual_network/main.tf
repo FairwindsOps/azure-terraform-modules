@@ -9,7 +9,7 @@ locals {
 }
 
 module "subnet_addrs" {
-  source          = "git@github.com:hashicorp/terraform-cidr-subnets.git?ref=v1.0.0"
+  source          = "github.com/hashicorp/terraform-cidr-subnets.git?ref=v1.0.0"
   base_cidr_block = local.network_cidr
   networks        = local.network_objs
 }

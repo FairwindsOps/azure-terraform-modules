@@ -44,7 +44,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     dynamic "azure_active_directory" {
       for_each = var.enable_aad_auth == false ? [] : list(var.enable_aad_auth)
       content {
-        managed = true
+        managed                = true
         admin_group_object_ids = [azuread_group.aks-aad-clusteradmins[0].id]
       }
     }

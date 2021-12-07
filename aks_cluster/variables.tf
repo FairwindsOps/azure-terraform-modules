@@ -113,12 +113,12 @@ variable "outbound_ip_prefix_ids" {
 
 variable "outbound_ports_allocated" {
   default = 0
-  type = number
+  type    = number
 }
 
 variable "load_balancer_idle_timeout_in_minutes" {
   default = 30
-  type = number
+  type    = number
 }
 
 variable "kubernetes_version" {

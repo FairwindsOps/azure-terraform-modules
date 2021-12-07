@@ -1,7 +1,7 @@
 # Create Service Principal for AKS cluster
 resource "azuread_application" "aks_sp_application" {
-  count                      = local.use_aks_sp ? 1 : 0
-  display_name               = "${var.cluster_name}-aks"
+  count        = local.use_aks_sp ? 1 : 0
+  display_name = "${var.cluster_name}-aks"
 }
 
 resource "azuread_service_principal" "aks_sp" {
@@ -32,6 +32,6 @@ resource "azurerm_role_assignment" "aks_sp_role_assignment" {
 
 # Create a cluster admin group
 resource "azuread_group" "aks-aad-clusteradmins" {
-  count = var.enable_aad_auth ? 1 : 0
-  display_name  = "${var.cluster_name}-clusteradmin"
+  count        = var.enable_aad_auth ? 1 : 0
+  display_name = "${var.cluster_name}-clusteradmin"
 }

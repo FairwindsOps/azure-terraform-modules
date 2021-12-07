@@ -15,8 +15,6 @@ resource "azuread_service_principal_password" "aks_sp_password" {
     ignore_changes = [end_date]
   }
   service_principal_id = azuread_service_principal.aks_sp[0].id
-  value                = var.aks_sp_secret
-  end_date             = timeadd(timestamp(), "43800h") # 5 years
 }
 
 resource "azurerm_role_assignment" "aks_sp_role_assignment" {
@@ -32,6 +30,7 @@ resource "azurerm_role_assignment" "aks_sp_role_assignment" {
 
 # Create a cluster admin group
 resource "azuread_group" "aks-aad-clusteradmins" {
-  count        = var.enable_aad_auth ? 1 : 0
-  display_name = "${var.cluster_name}-clusteradmin"
+  count            = var.enable_aad_auth ? 1 : 0
+  display_name     = "${var.cluster_name}-clusteradmin"
+  security_enabled = true
 }

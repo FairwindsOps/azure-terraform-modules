@@ -64,6 +64,7 @@ The following table lists the configurable parameters that this module accepts.
 | `network_cidr_prefix`         | The network cidr ip prefix                               | `"10.0.0.0"`   |
 | `network_cidr_suffix`         | The network cidr suffix                                  | `8`            |
 | `networks`                    | A list of objects that contain subnets and desired size  | `[{`<br>`name = "subnet-1"`<br>`cidr_block = 18`<br>`},`<br>`{`<br>`name = "subnet-2"`<br>`cidr_block = 18`<br>`}]` |
+| `security_group` | Security group to attach to subnet | "" | |
 | `resource_group_name`         | The resource group to place the Azure network            | `None`         |
 | `additional_tags`             | A map of tags to be appended to Azure objects            | `{}`           |
 

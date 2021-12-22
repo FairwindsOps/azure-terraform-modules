@@ -25,6 +25,7 @@ resource "azurerm_virtual_network" "network" {
     content {
       name           = subnet.key
       address_prefix = subnet.value
+      security_group = var.security_group
     }
   }
 
@@ -32,7 +33,7 @@ resource "azurerm_virtual_network" "network" {
     for_each = var.enable_ddos_protection_plan ? [1] : []
     content {
       enable = var.enable_ddos_protection_plan
-      id = var.ddos_protection_plan_id
+      id     = var.ddos_protection_plan_id
     }
   }
 

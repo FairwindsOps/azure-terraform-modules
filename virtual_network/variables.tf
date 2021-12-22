@@ -11,13 +11,14 @@ variable "network_cidr_suffix" {
   type        = number
   default     = 8
   description = "The cidr block size for the network"
-
-  variable "security_group" {
-    type        = string
-    default     = ""
-    description = "Network security group associated with the subnet"
-  }
 }
+
+variable "security_group" {
+  type        = string
+  default     = ""
+  description = "Network security group associated with the subnet"
+}
+
 
 variable "subnets" {
   type = list(object({

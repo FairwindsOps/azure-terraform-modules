@@ -1,5 +1,9 @@
 # Changelog
 
+## virtual_network-v0.9.1
+### Added
+`security_group` variable for use in subnet definition
+
 ## virtual_network-v0.8.0
 ### Added
 

@@ -25,7 +25,7 @@ resource "azurerm_virtual_network" "network" {
     content {
       name           = subnet.key
       address_prefix = subnet.value
-      security_group = ""
+      security_group = var.security_group
     }
   }
 
